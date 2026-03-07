@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+JP:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-base: #0f172a;
+  --color-accent: #6366f1;
+  --color-accent-light: #818cf8;
+  --color-accent-dark: #4f46e5;
+  --color-bg: #f8fafc;
+  --color-white: #ffffff;
+  --color-gray-50: #f8fafc;
+  --color-gray-100: #f1f5f9;
+  --color-gray-200: #e2e8f0;
+  --color-gray-300: #cbd5e1;
+  --color-gray-400: #94a3b8;
+  --color-gray-500: #64748b;
+  --color-gray-600: #475569;
+  --color-gray-700: #334155;
+  --color-gray-800: #1e293b;
+  --color-gray-900: #0f172a;
+  --color-rose-500: #f43f5e;
+  --color-rose-50: #fff1f2;
+  --color-rose-100: #ffe4e6;
+  --color-emerald-500: #10b981;
+  --color-emerald-50: #ecfdf5;
+  --color-amber-500: #f59e0b;
+  --color-amber-50: #fffbeb;
+  --font-sans: 'Inter', 'Noto Sans JP', system-ui, sans-serif;
+}
+
+/* Let Tailwind v4 preflight handle resets — do NOT override margin/padding globally */
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-gray-700);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ═══ CARD ═══ */
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.03);
+  transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+  border-color: var(--color-gray-300);
+}
+
+/* ═══ PATTERN CARD (parallax carousel) ═══ */
+.pattern-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 16px;
+  padding: 28px;
+  transition: border-color 0.4s ease;
+}
+
+.pattern-card:hover {
+  border-color: rgba(99, 102, 241, 0.3);
+}
+
+.card-static {
+  background: var(--color-white);
+  border: 1px solid var(--color-gray-200);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.03);
+}
+
+/* ═══ MOSAIC ═══ */
+.mosaic-lock {
+  filter: blur(16px);
+  user-select: none;
+  pointer-events: none;
+  mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+  -webkit-mask-image: linear-gradient(to bottom, black 0%, transparent 85%);
+}
+
+/* ═══ ARTICLE ═══ */
+.article-body p {
+  margin-bottom: 1.2em;
+}
+
+.article-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* ═══ SCROLLBAR ═══ */
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gray-300);
+  border-radius: 2px;
+}
+
+/* ═══ SCANNER KEYFRAMES ═══ */
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+}
