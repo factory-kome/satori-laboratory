@@ -3,7 +3,8 @@ import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
     ChevronRight, ChevronDown, ChevronUp, BookOpen, BarChart3,
-    AlertTriangle, AlertCircle, Info, ArrowLeft, Download, RefreshCw
+    AlertTriangle, AlertCircle, Info, ArrowLeft, Download, RefreshCw,
+    Zap, Brain, CheckCircle2, TrendingUp
 } from 'lucide-react'
 import { SCAN_MESSAGES } from './data'
 
@@ -16,8 +17,12 @@ type Finding = {
     category: string
     severity: 'high' | 'medium' | 'low'
     finding: string
+    whyItMatters?: string
+    psychologyBasis?: string
     recommendation: string
+    actionSteps?: string[]
     improvedCopy: string
+    expectedImpact?: string
     relatedInsight: string
 }
 
@@ -66,8 +71,8 @@ function FindingCard({ finding, index, defaultOpen }: { finding: Finding; index:
                 className="w-full text-left px-6 sm:px-7 py-5 flex items-center gap-4 hover:bg-gray-50/50 transition-colors"
             >
                 <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${finding.severity === 'high' ? 'bg-rose-100 text-rose-600' :
-                        finding.severity === 'medium' ? 'bg-amber-100 text-amber-600' :
-                            'bg-blue-100 text-blue-600'
+                    finding.severity === 'medium' ? 'bg-amber-100 text-amber-600' :
+                        'bg-blue-100 text-blue-600'
                     }`}>
                     <span className="text-[14px] font-extrabold">#{index + 1}</span>
                 </div>
@@ -91,14 +96,36 @@ function FindingCard({ finding, index, defaultOpen }: { finding: Finding; index:
                     animate={{ opacity: 1 }}
                     className="px-6 sm:px-7 pb-6 sm:pb-7 border-t border-gray-100"
                 >
-                    {/* Finding */}
+                    {/* Finding — Deep Analysis */}
                     <div className="mt-5 mb-6">
                         <div className="flex items-center gap-2 mb-3">
                             <div className="w-2 h-2 rounded-full bg-rose-400" />
                             <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-gray-500">問題分析</span>
                         </div>
-                        <p className="text-[14px] text-gray-600 leading-[1.8]">{finding.finding}</p>
+                        <p className="text-[14px] text-gray-600 leading-[1.9]">{finding.finding}</p>
                     </div>
+
+                    {/* Why It Matters */}
+                    {finding.whyItMatters && (
+                        <div className="mb-6 bg-rose-50/60 border border-rose-100 rounded-xl p-5">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Zap className="w-3.5 h-3.5 text-rose-500" />
+                                <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-rose-500">なぜこれが致命的か</span>
+                            </div>
+                            <p className="text-[13px] text-rose-700 leading-[1.8]">{finding.whyItMatters}</p>
+                        </div>
+                    )}
+
+                    {/* Psychology Basis */}
+                    {finding.psychologyBasis && (
+                        <div className="mb-6 bg-violet-50/60 border border-violet-100 rounded-xl p-5">
+                            <div className="flex items-center gap-2 mb-3">
+                                <Brain className="w-3.5 h-3.5 text-violet-500" />
+                                <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-violet-500">心理学的根拠</span>
+                            </div>
+                            <p className="text-[13px] text-violet-700 leading-[1.8] italic">{finding.psychologyBasis}</p>
+                        </div>
+                    )}
 
                     {/* Recommendation */}
                     <div className="mb-6">
@@ -106,14 +133,44 @@ function FindingCard({ finding, index, defaultOpen }: { finding: Finding; index:
                             <div className="w-2 h-2 rounded-full bg-emerald-500" />
                             <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-emerald-600">改善施策</span>
                         </div>
-                        <p className="text-[14px] text-gray-600 leading-[1.8]">{finding.recommendation}</p>
+                        <p className="text-[14px] text-gray-600 leading-[1.9]">{finding.recommendation}</p>
                     </div>
+
+                    {/* Action Steps */}
+                    {finding.actionSteps && finding.actionSteps.length > 0 && (
+                        <div className="mb-6 bg-gray-50 border border-gray-200 rounded-xl p-5">
+                            <div className="flex items-center gap-2 mb-4">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500" />
+                                <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-indigo-500">今すぐできる 3ステップ</span>
+                            </div>
+                            <ol className="space-y-3">
+                                {finding.actionSteps.map((step, si) => (
+                                    <li key={si} className="flex items-start gap-3">
+                                        <span className={`w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0 text-[11px] font-extrabold text-white ${si === 0 ? 'bg-indigo-500' : si === 1 ? 'bg-indigo-400' : 'bg-indigo-300'
+                                            }`}>{si + 1}</span>
+                                        <span className="text-[13px] text-gray-600 leading-relaxed pt-0.5">{step}</span>
+                                    </li>
+                                ))}
+                            </ol>
+                        </div>
+                    )}
 
                     {/* Improved Copy */}
                     <div className="bg-gradient-to-br from-indigo-50 to-violet-50 border border-indigo-100 rounded-xl p-5 sm:p-6 mb-5">
                         <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-indigo-400 block mb-3">改善後のコピー案</span>
                         <p className="text-[16px] sm:text-[18px] font-bold text-gray-800 leading-snug">{finding.improvedCopy}</p>
                     </div>
+
+                    {/* Expected Impact */}
+                    {finding.expectedImpact && (
+                        <div className="flex items-start gap-3 mb-5 bg-emerald-50/60 border border-emerald-100 rounded-xl p-4">
+                            <TrendingUp className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
+                            <div>
+                                <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-emerald-500 block mb-1">期待される効果</span>
+                                <p className="text-[13px] text-emerald-700 leading-[1.7]">{finding.expectedImpact}</p>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Related Insight Link */}
                     <Link
