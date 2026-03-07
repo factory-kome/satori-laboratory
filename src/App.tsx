@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Routes, Route, Link } from 'react-router-dom'
+import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronRight, Lock, BarChart3, Search,
@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import { KNOWLEDGE_ITEMS, SCAN_MESSAGES, MOCK_SCORE, MOCK_RESULT, NAV_ITEMS } from './data'
 import InsightPage from './InsightPage'
+import FullReportPage from './FullReportPage'
 
 /* ══════════════════════════════════════════════════
    Carousel (infinite loop, auto-scroll, hover-pause)
@@ -231,6 +232,7 @@ type AnalysisResult = {
    ══════════════════════════════════════════════════ */
 
 function HomePage() {
+  const navigate = useNavigate()
   const [phase, setPhase] = useState<Phase>('idle')
   const [targetDemo, setTargetDemo] = useState('')
   const [priceRange, setPriceRange] = useState('')
@@ -517,9 +519,9 @@ function HomePage() {
                   <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center mb-6 border border-gray-200"><Lock className="w-5 h-5 text-gray-400" /></div>
                   <h3 className="text-[20px] sm:text-[24px] font-bold text-base mb-3 tracking-tight">残り{result.locked.length}件の改善ポイントが見つかりました</h3>
                   <p className="text-[14px] text-gray-500 mb-8 max-w-md leading-relaxed">すべての分析結果と最適化コピー案を含む、フルレポートのロックを解除します。</p>
-                  <a href="#" className="group px-8 sm:px-10 py-4 bg-accent text-white rounded-xl text-[14px] font-bold tracking-wide hover:bg-accent-dark transition-all flex items-center gap-3 shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-0.5">
+                  <button onClick={() => navigate('/report', { state: { target: targetDemo, price: priceRange, copy: lpCopy } })} className="group px-8 sm:px-10 py-4 bg-accent text-white rounded-xl text-[14px] font-bold tracking-wide hover:bg-accent-dark transition-all flex items-center gap-3 shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-0.5">
                     フルレポートをアンロック — ¥4,980<ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  </a>
+                  </button>
                   <button onClick={() => setPhase('idle')} className="mt-5 text-[13px] text-gray-400 hover:text-gray-600 transition-colors font-medium">別のコピーで再診断する</button>
                 </div>
               </motion.div>
@@ -553,6 +555,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/insights/:slug" element={<InsightPage />} />
+      <Route path="/report" element={<FullReportPage />} />
     </Routes>
   )
 }
