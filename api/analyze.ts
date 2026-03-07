@@ -60,7 +60,11 @@ JSON形式（これ以外の出力は厳禁）：
     { "title": "改善ポイント2のタイトル" },
     { "title": "改善ポイント3のタイトル" },
     { "title": "改善ポイント4のタイトル" },
-    { "title": "改善ポイント5のタイトル" }
+    { "title": "改善ポイント5のタイトル" },
+    { "title": "改善ポイント6のタイトル" },
+    { "title": "改善ポイント7のタイトル" },
+    { "title": "改善ポイント8のタイトル" },
+    { "title": "改善ポイント9のタイトル" }
   ]
 }`
 
@@ -114,7 +118,7 @@ ${sanitizedCopy}`
                     { role: 'user', content: userMessage },
                 ],
                 temperature: 0.7,
-                max_tokens: 1500,
+                max_tokens: 2000,
                 response_format: { type: 'json_object' },
             }),
         })

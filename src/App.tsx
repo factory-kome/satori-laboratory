@@ -12,14 +12,27 @@ import InsightPage from './InsightPage'
    Carousel (infinite loop, auto-scroll, hover-pause)
    ══════════════════════════════════════════════════ */
 
+function useIsMobile(breakpoint = 768) {
+  const [isMobile, setIsMobile] = useState(false)
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < breakpoint)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [breakpoint])
+  return isMobile
+}
+
 function KnowledgeCarousel() {
   const trackRef = useRef<HTMLDivElement>(null)
   const [isPaused, setIsPaused] = useState(false)
   const [hoveredSlug, setHoveredSlug] = useState<string | null>(null)
   const animRef = useRef<number>(0)
   const posRef = useRef(0)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
+    if (isMobile) return // Mobile: no auto-scroll
     const track = trackRef.current
     if (!track) return
     const speed = 0.5
@@ -34,44 +47,46 @@ function KnowledgeCarousel() {
     }
     animRef.current = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(animRef.current)
-  }, [isPaused])
+  }, [isPaused, isMobile])
 
-  const doubled = [...KNOWLEDGE_ITEMS, ...KNOWLEDGE_ITEMS]
+  const items = isMobile ? KNOWLEDGE_ITEMS : [...KNOWLEDGE_ITEMS, ...KNOWLEDGE_ITEMS]
+
+  const renderKnowledgeCard = (item: typeof KNOWLEDGE_ITEMS[0], i: number) => (
+    <Link key={`${item.slug}-${i}`} to={`/insights/${item.slug}`}
+      className={`card group cursor-pointer flex-shrink-0 !p-7 ${isMobile ? 'w-[85vw] snap-center' : 'w-[340px]'}`}
+      style={{
+        opacity: hoveredSlug && hoveredSlug !== item.slug ? 0.5 : 1,
+        filter: hoveredSlug && hoveredSlug !== item.slug ? 'blur(4px)' : 'blur(0px)',
+        transform: hoveredSlug === item.slug ? 'scale(1.03)' : 'scale(1)',
+        borderColor: hoveredSlug === item.slug ? 'rgba(99,102,241,0.3)' : undefined,
+        boxShadow: hoveredSlug === item.slug
+          ? '0 20px 50px rgba(99,102,241,0.12), 0 4px 16px rgba(15,23,42,0.06)'
+          : '0 1px 3px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.03)',
+        transition: 'opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease',
+      }}
+      onMouseEnter={() => { setIsPaused(true); setHoveredSlug(item.slug) }}
+      onMouseLeave={() => { setIsPaused(false); setHoveredSlug(null) }}
+    >
+      <div className="flex items-start justify-between mb-5">
+        <div className={`w-10 h-10 rounded-xl ${item.color} border flex items-center justify-center`}>
+          <item.icon className="w-4 h-4" />
+        </div>
+        <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-accent group-hover:translate-x-0.5 transition-all" />
+      </div>
+      <h3 className="text-[16px] font-bold text-base mb-1">{item.title}</h3>
+      <p className="text-[12px] text-gray-400 mb-3 font-medium">{item.subtitle}</p>
+      <p className="text-[13px] text-gray-500 leading-relaxed">{item.description}</p>
+      <div className="flex items-center gap-2 mt-5 pt-4 border-t border-gray-100">
+        <BookOpen className="w-3.5 h-3.5 text-accent" />
+        <span className="text-[11px] font-semibold text-accent tracking-wide">記事を読む</span>
+      </div>
+    </Link>
+  )
 
   return (
-    <div className="overflow-hidden">
-      <div ref={trackRef} className="flex gap-6 will-change-transform" style={{ width: 'max-content' }}>
-        {doubled.map((item, i) => (
-          <Link key={`${item.slug}-${i}`} to={`/insights/${item.slug}`}
-            className="card group cursor-pointer flex-shrink-0 w-[340px] !p-7"
-            style={{
-              opacity: hoveredSlug && hoveredSlug !== item.slug ? 0.5 : 1,
-              filter: hoveredSlug && hoveredSlug !== item.slug ? 'blur(4px)' : 'blur(0px)',
-              transform: hoveredSlug === item.slug ? 'scale(1.03)' : 'scale(1)',
-              borderColor: hoveredSlug === item.slug ? 'rgba(99,102,241,0.3)' : undefined,
-              boxShadow: hoveredSlug === item.slug
-                ? '0 20px 50px rgba(99,102,241,0.12), 0 4px 16px rgba(15,23,42,0.06)'
-                : '0 1px 3px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.03)',
-              transition: 'opacity 0.4s ease, filter 0.4s ease, transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease',
-            }}
-            onMouseEnter={() => { setIsPaused(true); setHoveredSlug(item.slug) }}
-            onMouseLeave={() => { setIsPaused(false); setHoveredSlug(null) }}
-          >
-            <div className="flex items-start justify-between mb-5">
-              <div className={`w-10 h-10 rounded-xl ${item.color} border flex items-center justify-center`}>
-                <item.icon className="w-4 h-4" />
-              </div>
-              <ChevronRight className="w-4 h-4 text-gray-300 group-hover:text-accent group-hover:translate-x-0.5 transition-all" />
-            </div>
-            <h3 className="text-[16px] font-bold text-base mb-1">{item.title}</h3>
-            <p className="text-[12px] text-gray-400 mb-3 font-medium">{item.subtitle}</p>
-            <p className="text-[13px] text-gray-500 leading-relaxed">{item.description}</p>
-            <div className="flex items-center gap-2 mt-5 pt-4 border-t border-gray-100">
-              <BookOpen className="w-3.5 h-3.5 text-accent" />
-              <span className="text-[11px] font-semibold text-accent tracking-wide">記事を読む</span>
-            </div>
-          </Link>
-        ))}
+    <div className={isMobile ? 'overflow-x-auto scrollbar-hide snap-x snap-mandatory px-4 -mx-4' : 'overflow-hidden'}>
+      <div ref={isMobile ? undefined : trackRef} className={`flex gap-6 ${isMobile ? '' : 'will-change-transform'}`} style={isMobile ? undefined : { width: 'max-content' }}>
+        {items.map(renderKnowledgeCard)}
       </div>
     </div>
   )
@@ -89,6 +104,7 @@ function PatternParallax({ items }: { items: typeof KNOWLEDGE_ITEMS }) {
   const animRef = useRef<number>(0)
   const topPos = useRef(0)
   const btmPos = useRef(0)
+  const isMobile = useIsMobile()
 
   // Split items into 2 rows — staggered
   const mid = Math.ceil(items.length / 2)
@@ -96,6 +112,7 @@ function PatternParallax({ items }: { items: typeof KNOWLEDGE_ITEMS }) {
   const btmItems = items.slice(mid)
 
   useEffect(() => {
+    if (isMobile) return // Mobile: no auto-scroll
     const top = topRef.current
     const btm = btmRef.current
     if (!top || !btm) return
@@ -116,16 +133,16 @@ function PatternParallax({ items }: { items: typeof KNOWLEDGE_ITEMS }) {
     }
     animRef.current = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(animRef.current)
-  }, [isPaused])
+  }, [isPaused, isMobile])
 
-  const topDoubled = [...topItems, ...topItems, ...topItems]
-  const btmDoubled = [...btmItems, ...btmItems, ...btmItems]
+  const topDisplay = isMobile ? topItems : [...topItems, ...topItems, ...topItems]
+  const btmDisplay = isMobile ? btmItems : [...btmItems, ...btmItems, ...btmItems]
 
   const renderCard = (card: (typeof items)[0], i: number) => (
     <Link
       key={`${card.slug}-${i}`}
       to={`/insights/${card.slug}`}
-      className="pattern-card group cursor-pointer flex-shrink-0 w-[340px] !p-7 block"
+      className={`pattern-card group cursor-pointer flex-shrink-0 !p-7 block ${isMobile ? 'w-[85vw] snap-center' : 'w-[340px]'}`}
       style={{
         opacity: hoveredSlug && hoveredSlug !== card.slug ? 0.5 : 1,
         filter: hoveredSlug && hoveredSlug !== card.slug ? 'blur(4px)' : 'blur(0px)',
@@ -164,15 +181,15 @@ function PatternParallax({ items }: { items: typeof KNOWLEDGE_ITEMS }) {
   return (
     <div className="space-y-6">
       {/* Top tier — faster */}
-      <div className="overflow-hidden">
-        <div ref={topRef} className="flex gap-6 will-change-transform" style={{ width: 'max-content' }}>
-          {topDoubled.map(renderCard)}
+      <div className={isMobile ? 'overflow-x-auto scrollbar-hide snap-x snap-mandatory px-4 -mx-4' : 'overflow-hidden'}>
+        <div ref={isMobile ? undefined : topRef} className={`flex gap-6 ${isMobile ? '' : 'will-change-transform'}`} style={isMobile ? undefined : { width: 'max-content' }}>
+          {topDisplay.map(renderCard)}
         </div>
       </div>
       {/* Bottom tier — slower, staggered start */}
-      <div className="overflow-hidden">
-        <div ref={btmRef} className="flex gap-6 will-change-transform" style={{ width: 'max-content', transform: 'translateX(-120px)' }}>
-          {btmDoubled.map(renderCard)}
+      <div className={isMobile ? 'overflow-x-auto scrollbar-hide snap-x snap-mandatory px-4 -mx-4' : 'overflow-hidden'}>
+        <div ref={isMobile ? undefined : btmRef} className={`flex gap-6 ${isMobile ? '' : 'will-change-transform'}`} style={isMobile ? undefined : { width: 'max-content', transform: 'translateX(-120px)' }}>
+          {btmDisplay.map(renderCard)}
         </div>
       </div>
     </div>
