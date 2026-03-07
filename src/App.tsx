@@ -509,20 +509,29 @@ function HomePage() {
                   </Link>
                 </div>
               </motion.div>
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="relative">
+
+              {/* ═══ Unlock CTA — directly after Finding #1 ═══ */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}
+                className="card !p-8 sm:!p-10 !shadow-xl !shadow-gray-200/40 text-center mb-8">
+                <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-5 border border-gray-200"><Lock className="w-5 h-5 text-gray-400" /></div>
+                <h3 className="text-[20px] sm:text-[24px] font-bold text-base mb-3 tracking-tight">残り{result.locked.length}件の改善ポイントが見つかりました</h3>
+                <p className="text-[14px] text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">すべての分析結果と最適化コピー案を含む、フルレポートのロックを解除します。</p>
+                <button onClick={() => navigate('/report', { state: { target: targetDemo, price: priceRange, copy: lpCopy } })} className="group px-8 sm:px-10 py-4 bg-accent text-white rounded-xl text-[14px] font-bold tracking-wide hover:bg-accent-dark transition-all inline-flex items-center gap-3 shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-0.5">
+                  フルレポートをアンロック — ¥4,980<ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+                <br />
+                <button onClick={() => setPhase('idle')} className="mt-5 text-[13px] text-gray-400 hover:text-gray-600 transition-colors font-medium">別のコピーで再診断する</button>
+              </motion.div>
+
+              {/* ═══ Locked Findings Teaser (3 items only) ═══ */}
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.5 }} className="relative">
                 <div className="mosaic-lock space-y-4">
-                  {result.locked.map((item, i) => (
+                  {result.locked.slice(0, 3).map((item, i) => (
                     <div key={i} className="card"><div className="flex items-center gap-3 mb-4"><div className="w-2 h-2 rounded-full bg-gray-300" /><span className="text-[11px] uppercase tracking-[0.15em] font-bold text-gray-400">Finding #{i + 2}</span></div><h4 className="text-[16px] font-bold text-gray-700 mb-4">{item.title}</h4><div className="space-y-2"><div className="w-full h-2 rounded-full bg-gray-100" /><div className="w-4/5 h-2 rounded-full bg-gray-100" /><div className="w-3/5 h-2 rounded-full bg-gray-100" /></div></div>
                   ))}
                 </div>
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6 sm:p-8 bg-gradient-to-t from-bg via-bg/95 to-bg/60">
-                  <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center mb-6 border border-gray-200"><Lock className="w-5 h-5 text-gray-400" /></div>
-                  <h3 className="text-[20px] sm:text-[24px] font-bold text-base mb-3 tracking-tight">残り{result.locked.length}件の改善ポイントが見つかりました</h3>
-                  <p className="text-[14px] text-gray-500 mb-8 max-w-md leading-relaxed">すべての分析結果と最適化コピー案を含む、フルレポートのロックを解除します。</p>
-                  <button onClick={() => navigate('/report', { state: { target: targetDemo, price: priceRange, copy: lpCopy } })} className="group px-8 sm:px-10 py-4 bg-accent text-white rounded-xl text-[14px] font-bold tracking-wide hover:bg-accent-dark transition-all flex items-center gap-3 shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-0.5">
-                    フルレポートをアンロック — ¥4,980<ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
-                  </button>
-                  <button onClick={() => setPhase('idle')} className="mt-5 text-[13px] text-gray-400 hover:text-gray-600 transition-colors font-medium">別のコピーで再診断する</button>
+                <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/95 to-bg/60 flex items-end justify-center pb-6">
+                  <span className="text-[13px] text-gray-400 font-medium">...他 {result.locked.length - 3}件の改善ポイント</span>
                 </div>
               </motion.div>
             </>

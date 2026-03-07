@@ -372,6 +372,45 @@ export default function InsightPage() {
                         </motion.section>
                     )}
 
+                    {/* ═══ Recommended Tool ═══ */}
+                    {(() => {
+                        const INSIGHT_TOOLS: Record<string, { name: string; desc: string; url: string; badge: string }> = {
+                            'cognitive-load': { name: 'Canva', desc: 'ビジュアルの整理と構成の最適化に。テンプレートで認知負荷を下げたLPデザインが可能', url: 'https://www.canva.com/', badge: 'デザイン' },
+                            'attention-drift': { name: 'Hotjar', desc: 'ユーザーの視線とスクロール行動をヒートマップで可視化。離脱ポイントを特定', url: 'https://www.hotjar.com/', badge: '分析' },
+                            'dual-process': { name: 'ChatGPT', desc: 'System 1に訴えかけるエモーショナルなコピーの生成・ブラッシュアップに', url: 'https://chat.openai.com/', badge: 'ライティング' },
+                            'physical-fit': { name: 'PIXTA', desc: 'ターゲットに「自分ごと」と感じさせるリアルな人物写真素材が豊富', url: 'https://pixta.jp/', badge: '素材' },
+                            'trust-logic': { name: 'ペライチ', desc: '信頼性の高いLPを最短で構築。テスティモニアルや実績セクションの追加が容易', url: 'https://peraichi.com/', badge: 'LP制作' },
+                            'frictionless-action': { name: 'Stripe', desc: 'フォーム入力を最小限にした決済体験を実装。CVR改善のボトルネック解消に', url: 'https://stripe.com/jp', badge: '決済' },
+                            'anchoring-effect': { name: 'ChatGPT', desc: 'アンカリングを活用した価格提示コピーの作成・ABテスト案の生成に', url: 'https://chat.openai.com/', badge: 'ライティング' },
+                            'scarcity-principle': { name: 'ペライチ', desc: '期間限定オファーやカウントダウンなどの緊急性を演出するLP要素を簡単に追加', url: 'https://peraichi.com/', badge: 'LP制作' },
+                            'social-proof-design': { name: 'Hotjar', desc: 'ユーザーがレビューや実績をどう読んでいるかを分析し、ソーシャルプルーフの効果を最大化', url: 'https://www.hotjar.com/', badge: '分析' },
+                            'narrative-transport': { name: 'ChatGPT', desc: 'ストーリーテリングの構成設計とナラティブコピーの生成に', url: 'https://chat.openai.com/', badge: 'ライティング' },
+                            'micro-copy': { name: 'ChatGPT', desc: 'ボタンラベル・フォームヒント等、マイクロコピーのバリエーション生成に最適', url: 'https://chat.openai.com/', badge: 'ライティング' },
+                            'color-psychology': { name: 'Adobe Express', desc: 'ブランドカラーに最適化されたデザインを直感的に作成。色彩心理の知見を即座に反映', url: 'https://www.adobe.com/express/', badge: 'デザイン' },
+                        }
+                        const tool = INSIGHT_TOOLS[slug ?? '']
+                        if (!tool) return null
+                        return (
+                            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}
+                                className="bg-gray-50/50 border border-gray-100 rounded-2xl p-6 sm:p-7 mb-8">
+                                <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-gray-400 block mb-4">この知識を活かすのに役立つツール</span>
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                    <div>
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="text-[16px] font-bold text-gray-800">{tool.name}</span>
+                                            <span className="px-1.5 py-0.5 bg-gray-200 rounded text-[9px] font-bold text-gray-500">{tool.badge}</span>
+                                        </div>
+                                        <p className="text-[13px] text-gray-500 leading-relaxed">{tool.desc}</p>
+                                    </div>
+                                    <a href={tool.url} target="_blank" rel="noopener noreferrer"
+                                        className="flex items-center justify-center gap-2 px-5 py-2.5 bg-white border border-gray-200 rounded-xl text-[13px] font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm flex-shrink-0">
+                                        詳しく見る<ExternalLink className="w-3.5 h-3.5" />
+                                    </a>
+                                </div>
+                            </motion.div>
+                        )
+                    })()}
+
                     {/* ═══ CTA ═══ */}
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.45 }}
                         className="p-8 md:p-10 bg-white border border-gray-200 rounded-2xl text-center shadow-sm mb-16">

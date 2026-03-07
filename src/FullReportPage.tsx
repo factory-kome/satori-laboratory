@@ -4,7 +4,8 @@ import { motion } from 'framer-motion'
 import {
     ChevronRight, ChevronDown, ChevronUp, BookOpen, BarChart3,
     AlertTriangle, AlertCircle, Info, ArrowLeft, Download, RefreshCw,
-    Zap, Brain, CheckCircle2, TrendingUp
+    Zap, Brain, CheckCircle2, TrendingUp, ExternalLink,
+    Layout, PenTool, Image as ImageIcon, MousePointer2, CreditCard, Sparkles, MessageSquare
 } from 'lucide-react'
 import { SCAN_MESSAGES } from './data'
 
@@ -23,7 +24,22 @@ type Finding = {
     actionSteps?: string[]
     improvedCopy: string
     expectedImpact?: string
+    toolRecommendation?: {
+        id: string
+        name: string
+        reason: string
+    }
     relatedInsight: string
+}
+
+const TOOLS_DB: Record<string, { label: string, url: string, icon: any, badge?: string }> = {
+    canva: { label: 'Canva', url: 'https://www.canva.com/', icon: Layout, badge: '制作' },
+    adobe: { label: 'Adobe Express', url: 'https://www.adobe.com/express/', icon: PenTool, badge: '制作' },
+    pixta: { label: 'PIXTA', url: 'https://pixta.jp/', icon: ImageIcon, badge: '素材' },
+    hotjar: { label: 'Hotjar', url: 'https://www.hotjar.com/', icon: MousePointer2, badge: '分析' },
+    stripe: { label: 'Stripe', url: 'https://stripe.com/jp', icon: CreditCard, badge: '決済' },
+    perayichi: { label: 'ペライチ', url: 'https://peraichi.com/', icon: Sparkles, badge: 'LP制作' },
+    chatgpt: { label: 'ChatGPT', url: 'https://chat.openai.com/', icon: MessageSquare, badge: 'ライティング' },
 }
 
 type FullReport = {
@@ -163,11 +179,45 @@ function FindingCard({ finding, index, defaultOpen }: { finding: Finding; index:
 
                     {/* Expected Impact */}
                     {finding.expectedImpact && (
-                        <div className="flex items-start gap-3 mb-5 bg-emerald-50/60 border border-emerald-100 rounded-xl p-4">
+                        <div className="flex items-start gap-3 mb-6 bg-emerald-50/60 border border-emerald-100 rounded-xl p-4">
                             <TrendingUp className="w-4 h-4 text-emerald-500 flex-shrink-0 mt-0.5" />
                             <div>
                                 <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-emerald-500 block mb-1">期待される効果</span>
                                 <p className="text-[13px] text-emerald-700 leading-[1.7]">{finding.expectedImpact}</p>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Tool Recommendation */}
+                    {finding.toolRecommendation && TOOLS_DB[finding.toolRecommendation.id] && (
+                        <div className="mb-6 bg-gray-50/50 border border-gray-100 rounded-xl p-5">
+                            <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-gray-400 block mb-3">実行に役立つ推奨リソース</span>
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 flex items-center justify-center text-gray-400">
+                                        {(() => {
+                                            const ToolIcon = TOOLS_DB[finding.toolRecommendation.id].icon;
+                                            return <ToolIcon className="w-5 h-5" />;
+                                        })()}
+                                    </div>
+                                    <div>
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[14px] font-bold text-gray-800">{TOOLS_DB[finding.toolRecommendation.id].label}</span>
+                                            {TOOLS_DB[finding.toolRecommendation.id].badge && (
+                                                <span className="px-1.5 py-0.5 bg-gray-200 rounded text-[9px] font-bold text-gray-500">{TOOLS_DB[finding.toolRecommendation.id].badge}</span>
+                                            )}
+                                        </div>
+                                        <p className="text-[12px] text-gray-500 leading-tight mt-0.5">{finding.toolRecommendation.reason}</p>
+                                    </div>
+                                </div>
+                                <a
+                                    href={TOOLS_DB[finding.toolRecommendation.id].url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-[13px] font-bold text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                                >
+                                    ツールを確認<ExternalLink className="w-3.5 h-3.5" />
+                                </a>
                             </div>
                         </div>
                     )}

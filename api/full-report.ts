@@ -70,10 +70,23 @@ JSON形式（これ以外の出力は厳禁）：
       "actionSteps": ["ステップ1の具体的アクション", "ステップ2の具体的アクション", "ステップ3の具体的アクション"],
       "improvedCopy": "改善後のコピー案（感情に訴えかけ、ターゲットの深層心理に刺さる表現）",
       "expectedImpact": "改善実施後の期待効果（1-2文、可能なら数値を含む）",
+      "toolRecommendation": {
+        "id": "canva | adobe | pixta | hotjar | stripe | perayichi | chatgpt",
+        "name": "推奨ツール名",
+        "reason": "この改善においてなぜこのツールが推奨されるかの簡潔な理由（1文）"
+      },
       "relatedInsight": "関連するナレッジのslug"
     }
   ]
 }
+
+推奨ツールの選択基準：
+- デザイン/構成の改善：canva (Canva), adobe (Adobe Express)
+- 素材/ビジュアルの質：pixta (PIXTA)
+- ユーザー行動分析/改善ヒートマップ：hotjar (Hotjar)
+- 決済/販売機能の導入：stripe (Stripe)
+- LP自体の作り直し/検証：perayichi (ペライチ)
+- キャッチコピー/文章構築の補助：chatgpt (ChatGPT)
 
 findingsは必ず9個出力してください。重要度の高い順に並べてください。
 各findingの分析は深く、具体的で、実務に直結する内容にしてください。
