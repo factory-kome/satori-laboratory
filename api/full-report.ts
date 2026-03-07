@@ -1,4 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
+import Stripe from 'stripe'
 
 /* ═══════════════════════════════════════════════
    Satori Laboratory — Full Report API
@@ -105,7 +106,31 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         return res.status(429).json({ error: 'フルレポートのリクエスト上限に達しました。しばらくしてから再度お試しください。' })
     }
 
-    const { target, price, copy } = req.body || {}
+    const { target, price, copy, sessionId } = req.body || {}
+
+    // --- Stripe Validation ---
+    if (!sessionId) {
+        return res.status(402).json({ error: 'フルレポートを生成するには決済が必要です。' })
+    }
+
+    try {
+        const stripeSecretKey = process.env.STRIPE_SECRET_KEY
+        if (!stripeSecretKey) {
+            console.error('Stripe API key not configured')
+            return res.status(500).json({ error: 'サーバー設定エラー: 決済環境が構成されていません。' })
+        }
+        const stripe = new Stripe(stripeSecretKey)
+        const session = await stripe.checkout.sessions.retrieve(sessionId)
+
+        if (session.payment_status !== 'paid') {
+            return res.status(402).json({ error: '支払いが完了していません。' })
+        }
+    } catch (err) {
+        console.error('Stripe validation error:', err)
+        return res.status(403).json({ error: '決済セッションの検証に失敗しました。不正なアクセスの可能性があります。' })
+    }
+    // -------------------------
+
     const sanitizedCopy = sanitize(String(copy || ''))
 
     if (!sanitizedCopy || sanitizedCopy.length < 10) {

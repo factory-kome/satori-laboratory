@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Routes, Route, Link, useNavigate } from 'react-router-dom'
+import { Routes, Route, Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   ChevronRight, Lock, BarChart3, Search,
@@ -232,7 +232,6 @@ type AnalysisResult = {
    ══════════════════════════════════════════════════ */
 
 function HomePage() {
-  const navigate = useNavigate()
   const [phase, setPhase] = useState<Phase>('idle')
   const [targetDemo, setTargetDemo] = useState('')
   const [priceRange, setPriceRange] = useState('')
@@ -242,8 +241,28 @@ function HomePage() {
   const [activeNav, setActiveNav] = useState('insights')
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null)
   const [apiError, setApiError] = useState<string | null>(null)
+  const [isRedirecting, setIsRedirecting] = useState(false)
   const apiPromiseRef = useRef<Promise<AnalysisResult | null> | null>(null)
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({})
+
+  // ===== Stripe Checkout Logic =====
+  const handleUnlock = async () => {
+    try {
+      setIsRedirecting(true)
+      // Save form data so it's not lost during stripe redirect
+      localStorage.setItem('satori_pending_report', JSON.stringify({ target: targetDemo, price: priceRange, copy: lpCopy }))
+
+      const res = await fetch('/api/create-checkout-session', { method: 'POST' })
+      if (!res.ok) throw new Error('Failed to create checkout session')
+
+      const { url } = await res.json()
+      window.location.href = url // Redirect to Stripe
+    } catch (err) {
+      console.error(err)
+      alert('決済画面への移動に失敗しました。通信環境を確認し再度お試しください。')
+      setIsRedirecting(false)
+    }
+  }
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -516,8 +535,12 @@ function HomePage() {
                 <div className="w-14 h-14 rounded-2xl bg-gray-100 flex items-center justify-center mx-auto mb-5 border border-gray-200"><Lock className="w-5 h-5 text-gray-400" /></div>
                 <h3 className="text-[20px] sm:text-[24px] font-bold text-base mb-3 tracking-tight">残り{result.locked.length}件の改善ポイントが見つかりました</h3>
                 <p className="text-[14px] text-gray-500 mb-8 max-w-md mx-auto leading-relaxed">すべての分析結果と最適化コピー案を含む、フルレポートのロックを解除します。</p>
-                <button onClick={() => navigate('/report', { state: { target: targetDemo, price: priceRange, copy: lpCopy } })} className="group px-8 sm:px-10 py-4 bg-accent text-white rounded-xl text-[14px] font-bold tracking-wide hover:bg-accent-dark transition-all inline-flex items-center gap-3 shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-0.5">
-                  フルレポートをアンロック — ¥4,980<ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+                <button
+                  onClick={handleUnlock}
+                  disabled={isRedirecting}
+                  className="group px-8 sm:px-10 py-4 bg-accent text-white rounded-xl text-[14px] font-bold tracking-wide hover:bg-accent-dark transition-all inline-flex items-center gap-3 shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed">
+                  {isRedirecting ? '決済画面を準備中...' : 'フルレポートをアンロック — ¥4,980'}
+                  {!isRedirecting && <ChevronRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />}
                 </button>
                 <br />
                 <button onClick={() => setPhase('idle')} className="mt-5 text-[13px] text-gray-400 hover:text-gray-600 transition-colors font-medium">別のコピーで再診断する</button>

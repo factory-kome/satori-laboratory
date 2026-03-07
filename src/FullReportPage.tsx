@@ -270,21 +270,33 @@ function ScoreRing({ score }: { score: number }) {
 export default function FullReportPage() {
     const location = useLocation()
     const navigate = useNavigate()
+    const searchParams = new URLSearchParams(location.search)
+    const sessionId = searchParams.get('session_id')
+
     const [report, setReport] = useState<FullReport | null>(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [scanIndex, setScanIndex] = useState(0)
+    const [lpDataState, setLpDataState] = useState<{ target?: string; price?: string; copy?: string } | null>(null)
     const hasFetched = useRef(false)
-
-    // Get the LP data passed from the diagnosis page via location.state
-    const lpData = location.state as { target?: string; price?: string; copy?: string } | null
 
     useEffect(() => {
         if (hasFetched.current) return
         hasFetched.current = true
 
-        if (!lpData?.copy) {
-            setError('診断データが見つかりません。トップページから再度診断を行ってください。')
+        // Read saved data from localStorage
+        let lpData: { target?: string; price?: string; copy?: string } | null = null
+        try {
+            const saved = localStorage.getItem('satori_pending_report')
+            if (saved) lpData = JSON.parse(saved)
+        } catch (e) {
+            console.error('Failed to parse from localStorage', e)
+        }
+
+        setLpDataState(lpData)
+
+        if (!lpData?.copy || !sessionId) {
+            setError('決済情報または診断データが見つかりません。トップページから再度診断を行ってください。')
             setLoading(false)
             return
         }
@@ -300,11 +312,11 @@ export default function FullReportPage() {
             })
         }, 500)
 
-        // Fetch full report
+        // Fetch full report with sessionId
         fetch('/api/full-report', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(lpData),
+            body: JSON.stringify({ ...lpData, sessionId }),
         })
             .then(async (res) => {
                 if (!res.ok) {
@@ -329,9 +341,9 @@ export default function FullReportPage() {
             })
 
         return () => clearInterval(scanTimer)
-    }, [lpData])
+    }, [sessionId])
 
-    const targetLabel = lpData?.target || '未指定'
+    const targetLabel = lpDataState?.target || '未指定'
     const today = new Date().toLocaleDateString('ja-JP', { year: 'numeric', month: 'long', day: 'numeric' })
 
     // Count severities
