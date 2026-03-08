@@ -164,16 +164,11 @@ body {
     font-size: 10pt !important;
   }
 
-  /* Cover Page Centering */
+  /* Cover Page Styling */
   .print-cover-page {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    min-height: 95vh !important;
-    page-break-after: always !important;
-    break-after: page !important;
-    margin: 0 !important;
-    padding-bottom: 20mm !important;
+    margin-bottom: 20px !important;
+    padding-bottom: 15px !important;
+    border-bottom: 2px solid #e2e8f0;
   }
 
   /* Hide UI elements not meant for PDF */
@@ -239,14 +234,14 @@ body {
   /* Reduce fonts */
   .text-\[14px\],
   .text-\[15px\] {
-    font-size: 10pt !important;
+    font-size: 9.5pt !important;
     line-height: 1.5 !important;
   }
 
   .text-\[13px\],
   .text-\[12px\],
   .text-\[11px\] {
-    font-size: 9pt !important;
+    font-size: 8.5pt !important;
   }
 
   .text-\[22px\],
