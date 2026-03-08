@@ -428,46 +428,49 @@ export default function FullReportPage() {
                 {/* Report Content */}
                 {report && (
                     <>
-                        {/* Report Header */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="bg-white rounded-2xl border border-gray-200 p-8 sm:p-10 shadow-lg shadow-gray-200/40 mb-6"
-                        >
-                            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
-                                <ScoreRing score={report.score} />
-                                <div className="flex-1 text-center sm:text-left">
-                                    <div className="flex items-center gap-2 justify-center sm:justify-start mb-2">
-                                        <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-indigo-500">Satori Laboratory</span>
-                                        <span className="text-[11px] text-gray-300">|</span>
-                                        <span className="text-[11px] text-gray-400 font-medium">{today}</span>
-                                    </div>
-                                    <h1 className="text-[22px] sm:text-[26px] font-bold text-gray-800 tracking-tight mb-3">市場適応性フルレポート</h1>
-                                    <p className="text-[13px] text-gray-400 font-medium mb-4">対象：{targetLabel}</p>
+                        {/* Print Cover Page Wrapper */}
+                        <div className="print-cover-page">
+                            {/* Report Header */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="bg-white rounded-2xl border border-gray-200 p-8 sm:p-10 shadow-lg shadow-gray-200/40 mb-6"
+                            >
+                                <div className="flex flex-col sm:flex-row items-center sm:items-start gap-8">
+                                    <ScoreRing score={report.score} />
+                                    <div className="flex-1 text-center sm:text-left">
+                                        <div className="flex items-center gap-2 justify-center sm:justify-start mb-2">
+                                            <span className="text-[11px] uppercase tracking-[0.15em] font-bold text-indigo-500">Satori Laboratory</span>
+                                            <span className="text-[11px] text-gray-300">|</span>
+                                            <span className="text-[11px] text-gray-400 font-medium">{today}</span>
+                                        </div>
+                                        <h1 className="text-[22px] sm:text-[26px] font-bold text-gray-800 tracking-tight mb-3">市場適応性フルレポート</h1>
+                                        <p className="text-[13px] text-gray-400 font-medium mb-4">対象：{targetLabel}</p>
 
-                                    {/* Severity summary */}
-                                    <div className="flex items-center gap-3 justify-center sm:justify-start flex-wrap">
-                                        {highCount > 0 && <span className="text-[12px] font-bold text-rose-500 bg-rose-50 px-3 py-1 rounded-lg">重要度 高: {highCount}件</span>}
-                                        {medCount > 0 && <span className="text-[12px] font-bold text-amber-500 bg-amber-50 px-3 py-1 rounded-lg">重要度 中: {medCount}件</span>}
-                                        {lowCount > 0 && <span className="text-[12px] font-bold text-blue-500 bg-blue-50 px-3 py-1 rounded-lg">重要度 低: {lowCount}件</span>}
+                                        {/* Severity summary */}
+                                        <div className="flex items-center gap-3 justify-center sm:justify-start flex-wrap">
+                                            {highCount > 0 && <span className="text-[12px] font-bold text-rose-500 bg-rose-50 px-3 py-1 rounded-lg">重要度 高: {highCount}件</span>}
+                                            {medCount > 0 && <span className="text-[12px] font-bold text-amber-500 bg-amber-50 px-3 py-1 rounded-lg">重要度 中: {medCount}件</span>}
+                                            {lowCount > 0 && <span className="text-[12px] font-bold text-blue-500 bg-blue-50 px-3 py-1 rounded-lg">重要度 低: {lowCount}件</span>}
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </motion.div>
+                            </motion.div>
 
-                        {/* Summary */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.1 }}
-                            className="bg-gradient-to-br from-indigo-50 to-violet-50 rounded-2xl border border-indigo-100 p-7 sm:p-8 mb-8"
-                        >
-                            <div className="flex items-center gap-2 mb-4">
-                                <BarChart3 className="w-4 h-4 text-indigo-500" />
-                                <span className="text-[12px] uppercase tracking-[0.15em] font-bold text-indigo-500">総合評価</span>
-                            </div>
-                            <p className="text-[15px] text-gray-700 leading-[1.9]">{report.summary}</p>
-                        </motion.div>
+                            {/* Summary */}
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.1 }}
+                                className="bg-gradient-to-br from-indigo-50 to-violet-50 rounded-2xl border border-indigo-100 p-7 sm:p-8 mb-8"
+                            >
+                                <div className="flex items-center gap-2 mb-4">
+                                    <BarChart3 className="w-4 h-4 text-indigo-500" />
+                                    <span className="text-[12px] uppercase tracking-[0.15em] font-bold text-indigo-500">総合評価</span>
+                                </div>
+                                <p className="text-[15px] text-gray-700 leading-[1.9]">{report.summary}</p>
+                            </motion.div>
+                        </div> {/* end print-cover-page */}
 
                         {/* Findings */}
                         <div className="space-y-4 mb-12">
@@ -516,6 +519,6 @@ export default function FullReportPage() {
                     </>
                 )}
             </main>
-        </div>
+        </div >
     )
 }
