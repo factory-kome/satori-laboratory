@@ -72,7 +72,7 @@ JSON形式（これ以外の出力は厳禁）：
       "improvedCopy": "改善後のコピー案（感情に訴えかけ、ターゲットの深層心理に刺さる表現）",
       "expectedImpact": "改善実施後の期待効果（1-2文、可能なら数値を含む）",
       "toolRecommendation": {
-        "id": "canva | adobe | pixta | hotjar | stripe | perayichi | chatgpt",
+        "id": "canva | adobe | pixta | hotjar | stripe | perayichi | chatgpt | amazon_book | amazon_gadget | amazon_workspace",
         "name": "推奨ツール名",
         "reason": "この改善においてなぜこのツールが推奨されるかの簡潔な理由（1文）"
       },
@@ -88,6 +88,10 @@ JSON形式（これ以外の出力は厳禁）：
 - 決済/販売機能の導入：stripe (Stripe)
 - LP自体の作り直し/検証：perayichi (ペライチ)
 - キャッチコピー/文章構築の補助：chatgpt (ChatGPT)
+- 知識の深掘り・理論の学習：amazon_book (関連する具体的な名著や参考書)
+- 集中力向上・作業効率化：amazon_gadget (ノイズキャンセリングイヤホン等のガジェット)
+- 長時間の執筆・作業環境構築：amazon_workspace (エルゴノミクスデバイス、モニター等)
+※これらはAIツールだけでなく、問題解決や能力向上に役立つ手軽な「物理的なアイテム・書籍」として適宜提案すること。
 
 findingsは必ず9個出力してください。重要度の高い順に並べてください。
 各findingの分析は深く、具体的で、実務に直結する内容にしてください。
@@ -124,6 +128,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
         if (session.payment_status !== 'paid') {
             return res.status(402).json({ error: '支払いが完了していません。' })
+        }
+
+        // --- Session Replay Prevention ---
+        // Ensure this paid session is actually for the submitted LP copy
+        const submittedLpHash = Buffer.from(encodeURIComponent(String(copy || '').slice(0, 500))).toString('base64').slice(0, 50)
+        if (session.client_reference_id && session.client_reference_id !== submittedLpHash) {
+            console.warn(`[Security] Session Replay blocked. Expected: ${session.client_reference_id}, Got: ${submittedLpHash}`)
+            return res.status(403).json({ error: '不正なリクエストを検知しました。この決済セッションは別のデータ用に発行されたものです。' })
         }
     } catch (err) {
         console.error('Stripe validation error:', err)

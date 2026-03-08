@@ -15,12 +15,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     try {
+        const { lpHash } = req.body || {}
+
         // Construct the full URL of the originating request for redirecting
         const protocol = req.headers['x-forwarded-proto'] || 'http'
         const host = req.headers.host
         const origin = `${protocol}://${host}`
 
         const session = await stripe.checkout.sessions.create({
+            client_reference_id: lpHash || 'unknown',
             payment_method_types: ['card'],
             line_items: [
                 {

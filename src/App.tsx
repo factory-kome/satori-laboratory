@@ -252,7 +252,14 @@ function HomePage() {
       // Save form data so it's not lost during stripe redirect
       localStorage.setItem('satori_pending_report', JSON.stringify({ target: targetDemo, price: priceRange, copy: lpCopy }))
 
-      const res = await fetch('/api/create-checkout-session', { method: 'POST' })
+      // Generate a simple fingerprint of the LP copy to prevent session reuse
+      const lpHash = btoa(encodeURIComponent(lpCopy.slice(0, 500))).slice(0, 50)
+
+      const res = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ lpHash })
+      })
       if (!res.ok) throw new Error('Failed to create checkout session')
 
       const { url } = await res.json()

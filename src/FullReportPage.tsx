@@ -5,7 +5,7 @@ import {
     ChevronRight, ChevronDown, ChevronUp, BookOpen, BarChart3,
     AlertTriangle, AlertCircle, Info, ArrowLeft, Download, RefreshCw,
     Zap, Brain, CheckCircle2, TrendingUp, ExternalLink,
-    Layout, PenTool, Image as ImageIcon, MousePointer2, CreditCard, Sparkles, MessageSquare
+    Layout, PenTool, Image as ImageIcon, MousePointer2, CreditCard, Sparkles, MessageSquare, Book, Headphones, Monitor
 } from 'lucide-react'
 import { SCAN_MESSAGES } from './data'
 
@@ -40,6 +40,9 @@ const TOOLS_DB: Record<string, { label: string, url: string, icon: any, badge?: 
     stripe: { label: 'Stripe', url: 'https://stripe.com/jp', icon: CreditCard, badge: '決済' },
     perayichi: { label: 'ペライチ', url: 'https://peraichi.com/', icon: Sparkles, badge: 'LP制作' },
     chatgpt: { label: 'ChatGPT', url: 'https://chat.openai.com/', icon: MessageSquare, badge: 'ライティング' },
+    amazon_book: { label: '名著・参考書 (Amazon)', url: 'https://www.amazon.co.jp/', icon: Book, badge: '学習' },
+    amazon_gadget: { label: '集中ガジェット (Amazon)', url: 'https://www.amazon.co.jp/', icon: Headphones, badge: '環境' },
+    amazon_workspace: { label: 'デスク環境 (Amazon)', url: 'https://www.amazon.co.jp/', icon: Monitor, badge: '環境' },
 }
 
 type FullReport = {

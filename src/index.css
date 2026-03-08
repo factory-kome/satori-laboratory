@@ -148,3 +148,67 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
+/* ═══ PRINT STYLES (PDF EXPORT) ═══ */
+@media print {
+  @page {
+    size: A4;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+
+  body {
+    background-color: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide UI elements not meant for PDF */
+  header,
+  button,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  .min-h-screen {
+    min-height: auto !important;
+    background: white !important;
+  }
+
+  main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Prevent page breaks inside important components */
+  .card,
+  .bg-white {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #e2e8f0 !important;
+    margin-bottom: 20px !important;
+  }
+
+  /* Force background colors to print */
+  .bg-indigo-50 {
+    background-color: #eef2ff !important;
+  }
+
+  .bg-rose-50 {
+    background-color: #fff1f2 !important;
+  }
+
+  .bg-amber-50 {
+    background-color: #fffbeb !important;
+  }
+
+  .bg-blue-50 {
+    background-color: #eff6ff !important;
+  }
+
+  .bg-gray-50 {
+    background-color: #f8fafc !important;
+  }
+}
