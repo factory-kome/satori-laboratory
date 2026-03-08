@@ -74,7 +74,7 @@ function SeverityBadge({ severity }: { severity: string }) {
    Finding Card (Accordion)
    ══════════════════════════════════════════════════ */
 
-function FindingCard({ finding, index, defaultOpen }: { finding: Finding; index: number; defaultOpen: boolean }) {
+function FindingCard({ finding, index, defaultOpen, isPrinting }: { finding: Finding; index: number; defaultOpen: boolean; isPrinting?: boolean }) {
     const [isOpen, setIsOpen] = useState(defaultOpen)
 
     return (
@@ -109,7 +109,7 @@ function FindingCard({ finding, index, defaultOpen }: { finding: Finding; index:
             </button>
 
             {/* Body — collapsible */}
-            {isOpen && (
+            {(isOpen || isPrinting) && (
                 <motion.div
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -281,6 +281,7 @@ export default function FullReportPage() {
     const [error, setError] = useState<string | null>(null)
     const [scanIndex, setScanIndex] = useState(0)
     const [lpDataState, setLpDataState] = useState<{ target?: string; price?: string; copy?: string } | null>(null)
+    const [isPrinting, setIsPrinting] = useState(false)
     const hasFetched = useRef(false)
 
     useEffect(() => {
@@ -475,7 +476,7 @@ export default function FullReportPage() {
                                 <span className="text-[11px] text-gray-300 font-medium">— 重要度順</span>
                             </div>
                             {report.findings.map((finding, i) => (
-                                <FindingCard key={i} finding={finding} index={i} defaultOpen={i === 0} />
+                                <FindingCard key={i} finding={finding} index={i} defaultOpen={i === 0} isPrinting={isPrinting} />
                             ))}
                         </div>
 
@@ -499,7 +500,13 @@ export default function FullReportPage() {
                                     <RefreshCw className="w-4 h-4" />別のLPを診断する
                                 </button>
                                 <button
-                                    onClick={() => window.print()}
+                                    onClick={() => {
+                                        setIsPrinting(true)
+                                        setTimeout(() => {
+                                            window.print()
+                                            setIsPrinting(false)
+                                        }, 400)
+                                    }}
                                     className="px-8 py-3.5 bg-gray-100 text-gray-600 rounded-xl text-[14px] font-bold hover:bg-gray-200 transition-colors flex items-center gap-2"
                                 >
                                     <Download className="w-4 h-4" />レポートを保存
